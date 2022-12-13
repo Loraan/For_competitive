@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = DataParallelismTask
+build_property.ProjectDir = /Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/

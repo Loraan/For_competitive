@@ -1,0 +1,14 @@
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask.deps.json
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask.runtimeconfig.json
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask.runtimeconfig.dev.json
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask.dll
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/bin/Debug/netcoreapp3.1/DataParallelismTask.pdb
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.csproj.AssemblyReference.cache
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.AssemblyInfoInputs.cache
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.AssemblyInfo.cs
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.csproj.CoreCompileInputs.cache
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.dll
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.pdb
+/Users/mikhail/Documents/5_sem/Concurrency/concurrency_tasks/Task 5/obj/Debug/netcoreapp3.1/DataParallelismTask.genruntimeconfig.cache

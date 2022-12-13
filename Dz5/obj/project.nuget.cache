@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "4kJwXx2S+vbgH+l6OPm3R1godLNvAz8HY8d51Xt4dkaH0Sdz25dkpbLZdApubqx1ijFdcn/syPSAB6dzNSRHtw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\home\\Downloads\\For_competitive\\Dz5\\DataParallelismTask.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\home\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\home\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\home\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\home\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.15\\microsoft.netcore.app.host.win-x64.3.1.15.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,116 +1,82 @@
-﻿using System;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 
+
 namespace CustomThreadPool
 {
-    public interface IThreadPool
+    public class MyThreadPool : IThreadPool
     {
-        void EnqueueAction(Action action);
-        long GetTasksProcessedCount();
-    }
+        private List<Thread> _works = new List<Thread>();
+        private Dictionary<int, WorkStealingQueue<Action>> _lQueues = new Dictionary<int, WorkStealingQueue<Action>>();
+        private Queue<Action> _gQueue = new Queue<Action>();
+        private long _processedTaskCount;
+        
+        public long GetTasksProcessedCount()
+            => _processedTaskCount;
 
-    public class CustomThreadPoolWrapper : IThreadPool
-    {
-        private long procTask = 0L;
+        public MyThreadPool()
+        {
+            for (var i = 0; i < Environment.ProcessorCount * 2; i++)
+                _works.Add(new Thread(CreateWorker) { IsBackground = true });
+            
+            foreach (var worker in _works)
+                _lQueues[worker.ManagedThreadId] = new WorkStealingQueue<Action>();
+            
+            foreach (var worker in _works)
+                worker.Start();
+        }
+
         public void EnqueueAction(Action action)
         {
-            CustomThreadPool.AddAction(delegate
+            var id = Thread.CurrentThread.ManagedThreadId;
+            if (_lQueues.ContainsKey(id))
+                _lQueues[id].LocalPush(action);
+            else
             {
-                action.Invoke();
-                Interlocked.Increment(ref procTask);
-            });
-        }
-
-        public long GetTasksProcessedCount() => procTask;
-    }
-
-    public static class CustomThreadPool
-    {
-        private static Queue<Action> queue = new Queue<Action>();
-        private static Dictionary<int, WorkStealingQueue<Action>> actions = new Dictionary<int, WorkStealingQueue<Action>>();
-        static CustomThreadPool()
-        {
-            void Worker()
-            {
-                while (true)
+                lock (_gQueue)
                 {
-                    Action currentAction = delegate { };
-                    while (actions[Thread.CurrentThread.ManagedThreadId].LocalPop(ref currentAction))
-                        currentAction.Invoke();
-                    var flag = TryDequeueAndFindFlag(true);
-
-                    if (!flag)
-                        flag = TryStealActionPool(flag);
-
-                    if (!flag)
-                        TryDequeueElseWait();
+                    _gQueue.Enqueue(action);
+                    Monitor.Pulse(_gQueue);
                 }
             }
-
-            RunBackgroundThreads(Worker, 16);
         }
 
-        private static bool TryDequeueAndFindFlag(bool flag)
+
+        private void CreateWorker()
         {
-            lock (queue)
+            var id = Thread.CurrentThread.ManagedThreadId;
+            while (true)
             {
-                if (queue.TryDequeue(out var action))
-                    actions[Thread.CurrentThread.ManagedThreadId].LocalPush(action);
+                Action task = null;
+                if (_lQueues[id].LocalPop(ref task))
+                {
+                    task();
+                    Interlocked.Increment(ref _processedTaskCount);
+                }
                 else
-                    flag = false;
+                {
+                    lock (_gQueue)
+                    {
+                        if (_gQueue.TryDequeue(out task))
+                            _lQueues[id].LocalPush(task);
+                        else if (!_lQueues.Any(worker => worker.Key != id && !worker.Value.IsEmpty))
+                            Monitor.Wait(_gQueue);
+                    }
+
+                    if (task is not null) continue;
+                    
+                    var stealingQueue = _lQueues
+                        .Where(worker => worker.Key != id && !worker.Value.IsEmpty)
+                        .Select(worker => worker.Value).FirstOrDefault();
+                    
+                    if (stealingQueue is null || !stealingQueue.TrySteal(ref task))
+                        continue;
+                    _lQueues[id].LocalPush(task);
+                    
+                }
             }
-            return flag;
-        }
-
-        private static bool TryStealActionPool(bool flag)
-        {
-            foreach (var threadPool in actions)
-            {
-                Action action = delegate { };
-                if (!threadPool.Value.TrySteal(ref action)) continue;
-                actions[Thread.CurrentThread.ManagedThreadId].LocalPush(action);
-                flag = true;
-                break;
-            }
-            return flag;
-        }
-
-        private static void TryDequeueElseWait()
-        {
-            lock (queue)
-            {
-                if (queue.TryDequeue(out var action))
-                    actions[Thread.CurrentThread.ManagedThreadId].LocalPush(action);
-                else
-                    Monitor.Wait(queue);
-            }
-        }
-
-        public static void AddAction(Action action)
-        {
-            lock (queue)
-            {
-                queue.Enqueue(action);
-                Monitor.Pulse(queue);
-            }
-        }
-
-        private static Thread[] RunBackgroundThreads(Action action, int count)
-        {
-            var threads = new List<Thread>();
-            for (var i = 0; i < count; i++)
-                threads.Add(RunBackgroundThread(action));
-            
-            return threads.ToArray();
-        }
-
-        private static Thread RunBackgroundThread(Action action)
-        {
-            var thread = new Thread(() => action()) { IsBackground = true };
-            actions[thread.ManagedThreadId] = new WorkStealingQueue<Action>();
-            thread.Start();
-            return thread;
         }
     }
 }
